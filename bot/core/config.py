@@ -6,22 +6,30 @@ import os
 class Config:
     bot_token: str
     admin_ids: list[int]
-    db_path: str
     log_level: str
+    database_url: str
 
 
 def load_config() -> Config:
-    token = os.getenv("BOT_TOKEN")
+    token = (os.getenv("BOT_TOKEN") or "").strip()
     if not token:
         raise RuntimeError("BOT_TOKEN missing")
 
-    admins = [
-        int(x) for x in os.getenv("ADMIN_IDS", "").split(",") if x.strip().isdigit()
-    ]
+    admin_ids = []
+    for x in (os.getenv("ADMIN_IDS") or "").split(","):
+        x = x.strip()
+        if x.isdigit():
+            admin_ids.append(int(x))
+
+    db_url = (os.getenv("DATABASE_URL") or "").strip()
+    if not db_url:
+        raise RuntimeError("DATABASE_URL missing")
+
+    log_level = (os.getenv("LOG_LEVEL") or "INFO").strip().upper()
 
     return Config(
         bot_token=token,
-        admin_ids=admins,
-        db_path=os.getenv("DB_PATH", "bot.sqlite3"),
-        log_level=os.getenv("LOG_LEVEL", "INFO"),
+        admin_ids=admin_ids,
+        log_level=log_level,
+        database_url=db_url,
     )
