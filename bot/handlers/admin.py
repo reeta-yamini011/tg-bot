@@ -23,3 +23,38 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     msg = " ".join(context.args)
     await update.message.reply_text(f"📣 Broadcast preview:\n\n{msg}")
+
+async def broadcast_copy_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    if not _is_admin(update, context):
+        await update.message.reply_text("⛔ Not allowed")
+        return
+
+    if not update.message or not update.message.reply_to_message:
+        await update.message.reply_text(
+            "Usage: Reply to ANY message (photo/video/document/text/etc) and run:\n"
+            "/broadcast_copy"
+        )
+        return
+
+    await update.message.reply_text("📣 Broadcasting media/message to all users…")
+
+    app = context.application
+    sessionmaker = context.bot_data["sessionmaker"]
+
+    src_chat_id = update.effective_chat.id
+    src_message_id = update.message.reply_to_message.message_id
+
+    result = await broadcast_copy(
+        app,
+        sessionmaker,
+        from_chat_id=src_chat_id,
+        message_id=src_message_id,
+    )
+
+    await update.message.reply_text(
+        f"✅ Broadcast done\n"
+        f"Total: {result.total}\n"
+        f"Sent: {result.sent}\n"
+        f"Blocked: {result.blocked}\n"
+        f"Failed: {result.failed}"
+    )
