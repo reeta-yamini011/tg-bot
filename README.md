@@ -102,3 +102,4 @@ python -m bot
 ### Admin
 - /stats
 - /broadcast <message>
+- /broadcast_copy
