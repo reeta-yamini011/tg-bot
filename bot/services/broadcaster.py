@@ -49,4 +49,4 @@ async def broadcast_copy(
 
         await asyncio.sleep(throttle_seconds)
 
-    return BroadcastResult(total=len(chat_ids), sent=sent, failed=failed, blocked=blocked
+    return BroadcastResult(total=len(chat_ids), sent=sent, failed=failed, blocked=blocked)
