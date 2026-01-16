@@ -18,7 +18,6 @@ async def run_app():
     db = Database(cfg.db_path)
 
     app = Application.builder().token(cfg.bot_token).build()
-
     app.bot_data["config"] = cfg
     app.bot_data["db"] = db
 
@@ -34,7 +33,7 @@ async def run_app():
     # admin
     app.add_handler(CommandHandler("stats", admin.stats))
     app.add_handler(CommandHandler("broadcast", admin.broadcast))
-
+    app.add_handler(CommandHandler("broadcast_copy", admin.broadcast_copy_cmd))
     # messages
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, messages.echo))
 
